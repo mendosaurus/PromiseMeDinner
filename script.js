@@ -45,6 +45,39 @@ function makeFood(steps, id) {
   //document.body.innerHTML += `<button onclick="new Audio('dinnerIsServed.mp3').play()">Dinner is Served!</button>`
 }
 
-makeFood(steak, "#steak");
-makeFood(mashPotatoes, "#mashPotatoes");
-makeFood(brusselSprouts, "#brusselSprouts");
+// iteration 1: Using callbacks print the directions to make Steak in the correct order as show above.
+function printSteak(steps, id) {
+  for (let i = 0; i < steps.length; i++) {
+    // for (step of steps) {
+    console.log(steps[i]);
+
+    addFood(steps[i], id, () => {
+      addFood(steps[i], id, () => {
+        addFood(steps[i], id, () => {
+          addFood(steps[i], id, () => {
+            addFood(steps[i], id, () => {
+              addFood(steps[i], id, () => {
+                addFood(steps[i], id, () => {
+                  addFood(steps[i], id, () => {
+                    addFood(steps[i], id);
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+  }
+
+  //Adds image to the table div
+  document.querySelector("#table").innerHTML += `<img src="images/${id.replace(
+    "#",
+    ""
+  )}.jpg" />`;
+}
+
+printSteak(steak, "#steak");
+// makeFood(steak, "#steak");
+// makeFood(mashPotatoes, "#mashPotatoes");
+// makeFood(brusselSprouts, "#brusselSprouts");
