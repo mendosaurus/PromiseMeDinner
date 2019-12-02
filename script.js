@@ -29,55 +29,95 @@ const mashPotatoes = [
   "enjoy"
 ];
 
-function makeFood(steps, id) {
-  for (const step of steps) {
-    //This function adds food to the list ==>  addFood('take steak from fridge', #steak)
-    addFood(step, id);
-  }
-
-  //Adds image to the table div
-  document.querySelector("#table").innerHTML += `<img src="images/${id.replace(
-    "#",
-    ""
-  )}.jpg" />`;
-
-  //Use once all food is made
-  //document.body.innerHTML += `<button onclick="new Audio('dinnerIsServed.mp3').play()">Dinner is Served!</button>`
-}
-
-// iteration 1: Using callbacks print the directions to make Steak in the correct order as show above.
-function printSteak(steps, id) {
-  for (let i = 0; i < steps.length; i++) {
-    // for (step of steps) {
-    console.log(steps[i]);
-
+// recursive
+function makePotatoesRec(steps, id, i) {
+  if (i < steps.length) {
     addFood(steps[i], id, () => {
-      addFood(steps[i], id, () => {
-        addFood(steps[i], id, () => {
-          addFood(steps[i], id, () => {
-            addFood(steps[i], id, () => {
-              addFood(steps[i], id, () => {
-                addFood(steps[i], id, () => {
-                  addFood(steps[i], id, () => {
-                    addFood(steps[i], id);
-                  });
-                });
+      makePotatoesRec(steps[i], id, i++);
+    });
+  }
+}
+//makePotatoesRec(mashPotatoes, '#mashPotatoes', 0)
+
+// callbacks
+function printSteak(steps, id) {
+  addFood(steps[0], id, () => {
+    addFood(steps[1], id, () => {
+      addFood(steps[2], id, () => {
+        addFood(steps[3], id, () => {
+          addFood(steps[4], id, () => {
+            addFood(steps[5], id, () => {
+              addFood(steps[6], id, () => {
+                addFood(steps[7], id);
               });
             });
           });
         });
       });
     });
-  }
-
-  //Adds image to the table div
+  });
   document.querySelector("#table").innerHTML += `<img src="images/${id.replace(
     "#",
     ""
   )}.jpg" />`;
 }
 
-printSteak(steak, "#steak");
-// makeFood(steak, "#steak");
-// makeFood(mashPotatoes, "#mashPotatoes");
-// makeFood(brusselSprouts, "#brusselSprouts");
+// then and promises
+function makeFoodPotatoes(steps, id) {
+  addFood(steps[0], id).then(() => {
+    addFood(steps[1], id).then(() => {
+      addFood(steps[2], id).then(() => {
+        addFood(steps[3], id).then(() => {
+          addFood(steps[4], id).then(() => {
+            document.querySelector("#table").innerHTML +=
+              '<img src="images/mashPotatoes.jpg" />';
+          });
+        });
+      });
+    });
+  });
+}
+
+// async await
+async function makeFoodBrussels(steps, id) {
+  await addFood(steps[0], id);
+  await addFood(steps[1], id);
+  await addFood(steps[2], id);
+  await addFood(steps[3], id);
+  await addFood(steps[4], id);
+  await addFood(steps[5], id);
+  await addFood(steps[6], id);
+  await addFood(steps[7], id);
+  await addFood(steps[8], id);
+  document.querySelector("#table").innerHTML +=
+    '<img src="images/brusselSprouts.jpg" />';
+}
+
+// makeFoodSteak(steak, "#steak");
+// makeFoodPotatoes(mashPotatoes, "#mashPotatoes")
+// makeFoodBrussels(brusselSprouts, "#brusselSprouts")
+
+async function makeFood(steps, id) {
+  let promises = [];
+  for (step of steps) {
+    promises.push(await addFood(step, id));
+  }
+  document.querySelector("#table").innerHTML += `<img src="images/${id.replace(
+    "#",
+    ""
+  )}.jpg" />`;
+  return promises;
+}
+Promise.all([
+  makeFood(steak, "#steak"),
+  makeFood(mashPotatoes, "#mashPotatoes"),
+  makeFood(brusselSprouts, "#brusselSprouts")
+]).then(value => {
+  console.log(value);
+  document.querySelector(
+    "body"
+  ).innerHTML += `<button >Dinner is Served!</button>`;
+  document.querySelector("button").onclick = () => {
+    new Audio("dinnerIsServed.mp3").play();
+  };
+});
